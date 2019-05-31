@@ -52,8 +52,8 @@
     "coinselect": "^3.1.1",
     "dhttp": "^2.3.5",
     "minimaldata": "christroutner/minimaldata",
-    "mocha": "^3.1.0",
-    "nyc": "^10.3.2",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
     "proxyquire": "^1.8.0",
     "sinon": "^1.17.7"
   },
