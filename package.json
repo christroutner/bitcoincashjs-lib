@@ -40,7 +40,7 @@
     "pushdata-bitcoin": "Bitcoin-com/pushdata-bitcoin#1.2.1",
     "randombytes": "^2.0.1",
     "safe-buffer": "^5.0.1",
-    "typeforce": "^1.11.3",
+    "typeforce": "^1.18.0",
     "varuint-bitcoin": "^1.0.4",
     "wif": "^2.0.1"
   },
