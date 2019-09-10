@@ -26,61 +26,72 @@ function isPushOnly(value) {
   return types.Array(value) && value.every(isPushOnlyChunk);
 }
 
+// This function reaks havoc on the OP_RETURN call of an SLP transaction.
 function asMinimalOP(buffer) {
-  if (buffer.length === 0) return OPS.OP_0;
-  //if (buffer.length !== 1) return;
+  //if (buffer.length === 0) return OPS.OP_0;
+  if (buffer.length !== 1) return;
   //if (buffer[0] >= 1 && buffer[0] <= 16) return OP_INT_BASE + buffer[0];
   //if (buffer[0] === 0x81) return OPS.OP_1NEGATE;
 }
 
+// Expects an array of Buffers, to be compiled into a binary blob returned
+// as a Buffer. This final blob is ready to used as an output of a Bitcoin
+// Cash transaction.
 function compile(chunks) {
-  // TODO: remove me
-  if (Buffer.isBuffer(chunks)) return chunks;
+  // If the chunks object is a Buffer, return it.
+  if (Buffer.isBuffer(chunks)) return chunks
 
-  typeforce(types.Array, chunks);
-
+  // Calculate the final size the buffer should be. Allows error checking in
+  // case compilation goes wonky.
   var bufferSize = chunks.reduce(function(accum, chunk) {
-    // data chunk
+    // If the chunk is of type Buffer.
     if (Buffer.isBuffer(chunk)) {
-      // adhere to BIP62.3, minimal push policy
-      if (chunk.length === 1 && asMinimalOP(chunk) !== undefined) {
-        return accum + 1;
-      }
-
-      return accum + pushdata.encodingLength(chunk.length) + chunk.length;
+      // Return the final complied length this Buffer will take up.
+      return accum + pushdata.encodingLength(chunk.length) + chunk.length
     }
 
-    // opcode
-    return accum + 1;
-  }, 0.0);
+    // Otherwise the chunk object is an OP code. It will take up 1 byte.
+    return accum + 1
+  }, 0.0)
 
-  var buffer = Buffer.allocUnsafe(bufferSize);
-  var offset = 0;
+  // buffer will hold final compiled Buffer.
+  var buffer = Buffer.allocUnsafe(bufferSize)
+  var offset = 0
 
-  chunks.forEach(function(chunk) {
-    // data chunk
+  // Loop through each element in the chunks Array.
+  chunks.forEach(function(chunk, index) {
+    // If the chunk is a Buffer and not an OP code.
     if (Buffer.isBuffer(chunk)) {
-      // adhere to BIP62.3, minimal push policy
-      var opcode = asMinimalOP(chunk);
-      if (opcode !== undefined) {
-        buffer.writeUInt8(opcode, offset);
-        offset += 1;
-        return;
-      }
+      console.log(" ")
+      console.log(`index: ${index}`)
+      console.log(`chunk: ${chunk.toString("hex")}`)
+      console.log(`original buffer: ${buffer.toString("hex")}`)
 
-      offset += pushdata.encode(buffer, chunk.length, offset);
-      chunk.copy(buffer, offset);
-      offset += chunk.length;
+      // Calculate the offset for adding this new chunk.
+      offset += pushdata.encode(buffer, chunk.length, offset)
 
-      // opcode
+      // Copy the current chunk into the buffer.
+      console.log(`chunk: ${chunk.toString("hex")}`)
+      chunk.copy(buffer, offset)
+      console.log(` modifed buffer: ${buffer.toString("hex")}`)
+
+      // Calculate the new offset.
+      offset += chunk.length
+
+      // The chunk is an OP code and not a Buffer.
     } else {
-      buffer.writeUInt8(chunk, offset);
-      offset += 1;
+      // Add the 1-byte OP code to the final Buffer output.
+      buffer.writeUInt8(chunk, offset)
+      offset += 1
     }
-  });
+  })
 
-  if (offset !== buffer.length) throw new Error("Could not decode chunks");
-  return buffer;
+  // If the calculated offset and buffer length don't match, then something
+  // went wrong. Throw an error.
+  if (offset !== buffer.length) throw new Error("Could not decode chunks")
+
+  // Return the final, compiled binary blog as a buffer.
+  return buffer
 }
 
 function decompile(buffer) {
