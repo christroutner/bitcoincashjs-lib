@@ -62,18 +62,16 @@ function compile(chunks) {
   chunks.forEach(function(chunk, index) {
     // If the chunk is a Buffer and not an OP code.
     if (Buffer.isBuffer(chunk)) {
-      console.log(" ")
-      console.log(`index: ${index}`)
-      console.log(`chunk: ${chunk.toString("hex")}`)
-      console.log(`original buffer: ${buffer.toString("hex")}`)
+      // console.log(" ")
+      // console.log(`index: ${index}`)
+      // console.log(`chunk: ${chunk.toString("hex")}`)
+      // console.log(`original buffer: ${buffer.toString("hex")}`)
 
       // Calculate the offset for adding this new chunk.
       offset += pushdata.encode(buffer, chunk.length, offset)
 
       // Copy the current chunk into the buffer.
-      console.log(`chunk: ${chunk.toString("hex")}`)
       chunk.copy(buffer, offset)
-      console.log(` modifed buffer: ${buffer.toString("hex")}`)
 
       // Calculate the new offset.
       offset += chunk.length
