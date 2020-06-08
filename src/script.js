@@ -270,6 +270,7 @@ function isCanonicalSignature(buffer) {
 
 module.exports = {
   compile: compile,
+  compile2: compile2,
   decompile: decompile,
   fromASM: fromASM,
   toASM: toASM,
