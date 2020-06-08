@@ -28,16 +28,69 @@ function isPushOnly(value) {
 
 // This function reaks havoc on the OP_RETURN call of an SLP transaction.
 function asMinimalOP(buffer) {
-  //if (buffer.length === 0) return OPS.OP_0;
+  if (buffer.length === 0) return OPS.OP_0;
   if (buffer.length !== 1) return;
-  //if (buffer[0] >= 1 && buffer[0] <= 16) return OP_INT_BASE + buffer[0];
-  //if (buffer[0] === 0x81) return OPS.OP_1NEGATE;
+  if (buffer[0] >= 1 && buffer[0] <= 16) return OP_INT_BASE + buffer[0];
+  if (buffer[0] === 0x81) return OPS.OP_1NEGATE;
 }
 
+// Originalize compile() function. This will not correctly compile some scripts,
+// including the OP_RETURN for SLP tokens. Use compile2() for that.
+function compile(chunks) {
+  // TODO: remove me
+  if (Buffer.isBuffer(chunks)) return chunks;
+
+  typeforce(types.Array, chunks);
+
+  var bufferSize = chunks.reduce(function(accum, chunk) {
+    // data chunk
+    if (Buffer.isBuffer(chunk)) {
+      // adhere to BIP62.3, minimal push policy
+      if (chunk.length === 1 && asMinimalOP(chunk) !== undefined) {
+        return accum + 1;
+      }
+
+      return accum + pushdata.encodingLength(chunk.length) + chunk.length;
+    }
+
+    // opcode
+    return accum + 1;
+  }, 0.0);
+
+  var buffer = Buffer.allocUnsafe(bufferSize);
+  var offset = 0;
+
+  chunks.forEach(function(chunk) {
+    // data chunk
+    if (Buffer.isBuffer(chunk)) {
+      // adhere to BIP62.3, minimal push policy
+      var opcode = asMinimalOP(chunk);
+      if (opcode !== undefined) {
+        buffer.writeUInt8(opcode, offset);
+        offset += 1;
+        return;
+      }
+
+      offset += pushdata.encode(buffer, chunk.length, offset);
+      chunk.copy(buffer, offset);
+      offset += chunk.length;
+
+      // opcode
+    } else {
+      buffer.writeUInt8(chunk, offset);
+      offset += 1;
+    }
+  });
+
+  if (offset !== buffer.length) throw new Error("Could not decode chunks");
+  return buffer;
+}
+
+// Compile for non-minimal Script, like for SLP OP_RETURNs.
 // Expects an array of Buffers, to be compiled into a binary blob returned
 // as a Buffer. This final blob is ready to used as an output of a Bitcoin
 // Cash transaction.
-function compile(chunks) {
+function compile2(chunks) {
   // If the chunks object is a Buffer, return it.
   if (Buffer.isBuffer(chunks)) return chunks
 
