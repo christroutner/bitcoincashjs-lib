@@ -13,7 +13,10 @@ var ecurve = require('ecurve')
 var curve = ecurve.getCurveByName('secp256k1')
 
 function HDNode (keyPair, chainCode) {
-  typeforce(types.tuple('ECPair', types.Buffer256bit), arguments)
+  // CT 6/18/2020 Commented this out. It causes problems with Gatsby and other
+  // web apps that use webpack. Somehow the keyPair comes through in a way that
+  // is perfectly valid, but failes the type check.
+  // typeforce(types.tuple('ECPair', types.Buffer256bit), arguments)
 
   if (!keyPair.compressed) throw new TypeError('BIP32 only allows compressed keyPairs')
 
