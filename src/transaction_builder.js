@@ -813,7 +813,9 @@ TransactionBuilder.prototype.sign = function(
       throw new Error("Inconsistent redeemScript");
     }
 
+    console.log('ping: about to get public key')
     var kpPubKey = keyPair.publicKey || keyPair.getPublicKeyBuffer();
+
     if (!canSign(input)) {
       if (witnessValue !== undefined) {
         if (input.value !== undefined && input.value !== witnessValue)
@@ -822,6 +824,7 @@ TransactionBuilder.prototype.sign = function(
         input.value = witnessValue;
       }
 
+      console.log('ping: preparing input')
       if (!canSign(input))
         prepareInput(
           input,
@@ -859,6 +862,8 @@ TransactionBuilder.prototype.sign = function(
         throw new Error(
           "BIP143 rejects uncompressed public keys in P2WPKH or P2WSH"
         );
+
+      console.log('ping: about to sign')
 
       var signature = keyPair.sign(signatureHash, signatureAlgorithm);
       if (Buffer.isBuffer(signature))
