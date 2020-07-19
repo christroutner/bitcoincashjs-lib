@@ -813,7 +813,7 @@ TransactionBuilder.prototype.sign = function(
       throw new Error("Inconsistent redeemScript");
     }
 
-    console.log('ping: about to get public key')
+    console.log('ping: about to get public key. kpPubKey: ', kpPubKey)
     var kpPubKey = keyPair.publicKey || keyPair.getPublicKeyBuffer();
 
     if (!canSign(input)) {
