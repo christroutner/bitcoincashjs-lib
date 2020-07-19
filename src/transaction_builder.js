@@ -821,7 +821,7 @@ TransactionBuilder.prototype.sign = function(
       if (witnessValue !== undefined) {
         if (input.value !== undefined && input.value !== witnessValue)
           throw new Error("Input didn't match witnessValue");
-        typeforce(types.Satoshi, witnessValue);
+        // typeforce(types.Satoshi, witnessValue);
         input.value = witnessValue;
       }
 
