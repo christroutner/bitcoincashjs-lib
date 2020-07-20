@@ -16,7 +16,7 @@ function Satoshi (value) {
 }
 
 // external dependent types
-var BigInt = typeforce.quacksLike('BigInteger')
+// var BigInt = typeforce.quacksLike('BigInteger')
 var ECPoint = typeforce.quacksLike('Point')
 
 // exposed, external API
