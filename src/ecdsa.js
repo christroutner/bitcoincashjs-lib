@@ -1,5 +1,5 @@
 // var typeforce = require('typeforce')
-var types = require('./types')
+// var types = require('./types')
 
 var BigInteger = require('bigi')
 var ECSignature = require('./ecsignature')

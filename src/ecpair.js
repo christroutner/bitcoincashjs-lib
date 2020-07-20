@@ -4,7 +4,7 @@ var ecdsa = require("./ecdsa");
 var schnorr = require("./schnorr");
 var randomBytes = require("randombytes");
 // var typeforce = require("typeforce");
-var types = require("./types");
+// var types = require("./types");
 var wif = require("wif");
 var ECSignature = require("./ecsignature");
 
@@ -70,21 +70,21 @@ ECPair.fromWIF = function(string, network) {
     var version = decoded.version;
 
     // list of networks?
-    if (types.Array(network)) {
-      network = network
-        .filter(function(x) {
-          return version === x.wif;
-        })
-        .pop();
-
-      if (!network) throw new Error("Unknown network version");
-
-      // otherwise, assume a network object (or default to bitcoin)
-    } else {
+    // if (types.Array(network)) {
+    //   network = network
+    //     .filter(function(x) {
+    //       return version === x.wif;
+    //     })
+    //     .pop();
+    //
+    //   if (!network) throw new Error("Unknown network version");
+    //
+    //   // otherwise, assume a network object (or default to bitcoin)
+    // } else {
       network = network || NETWORKS.bitcoin;
 
       if (version !== network.wif) throw new Error("Invalid network version");
-    }
+    // }
 
     var d = BigInteger.fromBuffer(decoded.privateKey);
 

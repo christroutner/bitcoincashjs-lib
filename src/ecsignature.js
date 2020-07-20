@@ -1,6 +1,6 @@
 var bip66 = require('bip66')
-var typeforce = require('typeforce')
-var types = require('./types')
+// var typeforce = require('typeforce')
+// var types = require('./types')
 
 var BigInteger = require('bigi')
 
