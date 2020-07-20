@@ -1,4 +1,4 @@
-var typeforce = require('typeforce')
+// var typeforce = require('typeforce')
 var types = require('./types')
 
 var BigInteger = require('bigi')
@@ -12,7 +12,7 @@ var deterministicGenerateK = require('./rfc6979').deterministicGenerateK
 var N_OVER_TWO = secp256k1.n.shiftRight(1)
 
 function sign (hash, d) {
-  typeforce(types.tuple(types.Hash256bit, types.BigInt), arguments)
+  // typeforce(types.tuple(types.Hash256bit, types.BigInt), arguments)
 
   var x = d.toBuffer(32)
   var e = BigInteger.fromBuffer(hash)
@@ -43,11 +43,11 @@ function sign (hash, d) {
 }
 
 function verify (hash, signature, Q) {
-  typeforce(types.tuple(
-    types.Hash256bit,
-    types.ECSignature,
-    types.ECPoint
-  ), arguments)
+  // typeforce(types.tuple(
+  //   types.Hash256bit,
+  //   types.ECSignature,
+  //   types.ECPoint
+  // ), arguments)
 
   var n = secp256k1.n
   var G = secp256k1.G
