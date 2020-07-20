@@ -34,7 +34,7 @@ var Network = typeforce.compile({
 
 // extend typeforce types with ours
 var types = {
-  BigInt: BigInt,
+  // BigInt: BigInt,
   BIP32Path: BIP32Path,
   Buffer256bit: typeforce.BufferN(32),
   ECPoint: ECPoint,
