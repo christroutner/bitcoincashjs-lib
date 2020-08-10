@@ -49,7 +49,14 @@ function deterministicGenerateK(hash, x, checkSig, algo16) {
     .update(ONE)
     .update(x)
     .update(hash)
-    .digest()
+
+  if(algo16){
+    typeforce(typeforce.BufferN(16), algo16)
+
+    k.update(algo16)
+  }
+  
+  k = k.digest()
 
   // Step G
   v = createHmac('sha256', k).update(v).digest()

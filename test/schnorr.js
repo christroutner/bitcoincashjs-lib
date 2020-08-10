@@ -13,11 +13,11 @@ var curve = schnorr.__curve
 var fixtures = require('./fixtures/schnorr.json')
 
 describe('schnorr', function () {
-  schnorr.__useRFC6979(false)
-
   describe('sign', function () {
     fixtures.sign.forEach(function(d){
-      it('produces a deterministic signature for "' + d.m + '"', function () {
+      it('produces a deterministic signature (' + ['Wuille', 'RFC6979'][+d.rfc6979] + ') for "' + d.m + '"', function () {
+        schnorr.__useRFC6979(d.rfc6979);
+
         var x = BigInteger.fromHex(d.x)
         var m = Buffer.from(d.m, 'hex')
         var signature = schnorr.sign(m, x).toRSBuffer()
@@ -59,6 +59,4 @@ describe('schnorr', function () {
       })
     })
   })
-
-  schnorr.__useRFC6979(false)
 })
